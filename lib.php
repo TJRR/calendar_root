@@ -284,32 +284,6 @@ function calendar_get_mini($courses, $groups, $users, $calmonth = false, $calyea
         }
     }
 
-    // Get the calendar type we are using.
-    $calendartype = \core_calendar\type_factory::get_calendar_instance();
-
-    $date = $calendartype->timestamp_to_date_array($calendar->time);
-
-    $prevmonth = calendar_sub_month($date['mon'], $date['year']);
-    $prevmonthtime = $calendartype->convert_to_gregorian($prevmonth[1], $prevmonth[0], 1);
-    $prevmonthtime = make_timestamp($prevmonthtime['year'], $prevmonthtime['month'], $prevmonthtime['day'],
-        $prevmonthtime['hour'], $prevmonthtime['minute']);
-
-    $nextmonth = calendar_add_month($date['mon'], $date['year']);
-    $nextmonthtime = $calendartype->convert_to_gregorian($nextmonth[1], $nextmonth[0], 1);
-    $nextmonthtime = make_timestamp($nextmonthtime['year'], $nextmonthtime['month'], $nextmonthtime['day'],
-        $nextmonthtime['hour'], $nextmonthtime['minute']);
-
-    $content  = html_writer::start_tag('div', array('class' => 'minicalendarblock'));
-    $content .= calendar_get_mini($calendar->courses, $calendar->groups, $calendar->users, false, false, 'display', $calendar->courseid, $prevmonthtime);
-    $content .= html_writer::end_tag('div');
-    $content .= html_writer::start_tag('div', array('class' => 'minicalendarblock'));
-    $content .= calendar_get_mini($calendar->courses, $calendar->groups, $calendar->users, false, false, 'display', $calendar->courseid, $calendar->time);
-    $content .= html_writer::end_tag('div');
-    $content .= html_writer::start_tag('div', array('class' => 'minicalendarblock'));
-    $content .= calendar_get_mini($calendar->courses, $calendar->groups, $calendar->users, false, false, 'display', $calendar->courseid, $nextmonthtime);
-    $content .= html_writer::end_tag('div');
-    return $content;
-
     // We want to have easy access by day, since the display is on a per-day basis.
     calendar_events_by_day($events, $m, $y, $eventsbyday, $durationbyday, $typesbyday, $courses);
 
