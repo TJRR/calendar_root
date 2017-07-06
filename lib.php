@@ -179,7 +179,7 @@ function calendar_get_starting_weekday() {
  */
 function calendar_get_mini($courses, $groups, $users, $calmonth = false, $calyear = false, $placement = false,
     $courseid = false, $time = 0) {
-    global $CFG, $OUTPUT, $PAGE;
+    global $CFG, $OUTPUT, $PAGE, $DB;
 
     // Get the calendar type we are using.
     $calendartype = \core_calendar\type_factory::get_calendar_instance();
@@ -349,7 +349,11 @@ function calendar_get_mini($courses, $groups, $users, $calmonth = false, $calyea
 
         $finishclass = false;
 
-        if (!empty($eventids)) {
+        //Pegando o dia e mes atual para fazer os calculos e apresentar o link para criação direta de evento
+        $diaatual = intval(date('d'));
+        $mesatual = intval(date('m'));
+
+        if (!empty($eventids) || ($day >= $diaatual && $m == $mesatual) || $m > $mesatual) {
             // There is at least one event on this day.
 
             $class .= ' hasevent';
@@ -411,7 +415,14 @@ function calendar_get_mini($courses, $groups, $users, $calmonth = false, $calyea
                         $name = format_string($event->name, true);
                     }
                 }
-                $popupcontent .= html_writer::link($dayhref, $name);
+                if($event->modulename == 'bigbluebuttonbn'){
+                   $eventhref = new moodle_url('../mod/'.$event->modulename.'/view.php');
+                   $id_evendo_bbb = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm inner join {modules} m on cm.module = m.id inner join {event} me on cm.instance = me.instance where me.modulename="bigbluebuttonbn" AND me.instance = ? AND cm.course=2 AND m.name="bigbluebuttonbn"', array($event->instance));
+                   $eventhref .= '?id='.$id_evendo_bbb->id;
+                   $popupcontent .= html_writer::link($eventhref, $name);
+                }else{
+                  $popupcontent .= html_writer::link($dayhref, $name);
+                }
                 $popupcontent .= html_writer::end_tag('div');
             }
 
