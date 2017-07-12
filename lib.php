@@ -358,8 +358,13 @@ function calendar_get_mini($courses, $groups, $users, $calmonth = false, $calyea
 
             $class .= ' hasevent';
             $hrefparams['view'] = 'day';
-            $dayhref = calendar_get_link_href(new moodle_url(CALENDAR_URL . 'view.php', $hrefparams), 0, 0, 0, $daytime);
-
+            //alterar este link aqui para enviar diretamente para a criação de eventos no BBB
+            //http://localhost:8888/moodle_tj/course/modedit.php?add=bigbluebuttonbn&type=&course=2&section=0
+            //$dayhref = calendar_get_link_href(new moodle_url(CALENDAR_URL . 'view.php', $hrefparams), 0, 0, 0, $daytime);
+            $dayhref = new moodle_url('modedit.php?add=bigbluebuttonbn&type=&course='.$courses[1].'&section=0');            
+            if(!$courses[1]){
+              $dayhref = calendar_get_link_href(new moodle_url(CALENDAR_URL . 'view.php', $hrefparams), 0, 0, 0, $daytime);
+            }
             $popupcontent = '';
             foreach ($eventids as $eventid) {
                 if (!isset($events[$eventid])) {
