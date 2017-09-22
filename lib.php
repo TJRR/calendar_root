@@ -364,7 +364,7 @@ function calendar_get_mini($courses, $groups, $users, $calmonth = false, $calyea
             $dayhref = "#";
             if(!isset($courses[1])){
               //http://conecta.tjrr.jus.br/course/modedit.php?add=bigbluebuttonbn&type=&course=1&section=1&return=0&sr=
-              $dayhref = new moodle_url($CFG->wwwroot . '/course/modedit.php?add=bigbluebuttonbn&type=&course=1&section=1&return=&sr=');
+              $dayhref = new moodle_url($CFG->wwwroot . '/course/modedit.php?add=bigbluebuttonbn&type=&course=1&section=1&return=&sr=&d='.$day.'&m='.$m.'&y='.$y);
               //$dayhref = calendar_get_link_href(new moodle_url(CALENDAR_URL . 'view.php', $hrefparams), 0, 0, 0, $daytime);
             }else{
               $dayhref = new moodle_url('modedit.php?add=bigbluebuttonbn&type=&course='.$courses[1].'&section=0');
@@ -425,7 +425,7 @@ function calendar_get_mini($courses, $groups, $users, $calmonth = false, $calyea
                     }
                 }
                 if($event->modulename == 'bigbluebuttonbn'){
-                   $eventhref = new moodle_url('../mod/'.$event->modulename.'/view.php');
+                   $eventhref = new moodle_url($CFG->wwwroot . '/mod'.'/'.$event->modulename.'/view.php');
                    @$id_evendo_bbb = $DB->get_record_sql('SELECT cm.id FROM {course_modules} cm inner join {modules} m on cm.module = m.id inner join {event} me on cm.instance = me.instance where me.modulename="bigbluebuttonbn" AND me.instance = ? AND cm.course= ? AND m.name="bigbluebuttonbn"', array($event->instance, $courseid));
                    $eventhref .= '?id='.$id_evendo_bbb->id;
                    $popupcontent .= html_writer::link($eventhref, $name);
