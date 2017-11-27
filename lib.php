@@ -367,7 +367,7 @@ function calendar_get_mini($courses, $groups, $users, $calmonth = false, $calyea
               $dayhref = new moodle_url($CFG->wwwroot . '/course/modedit.php?add=bigbluebuttonbn&type=&course=1&section=1&return=&sr=&d='.$day.'&m='.$m.'&y='.$y);
               //$dayhref = calendar_get_link_href(new moodle_url(CALENDAR_URL . 'view.php', $hrefparams), 0, 0, 0, $daytime);
             }else{
-              $dayhref = new moodle_url('modedit.php?add=bigbluebuttonbn&type=&course='.$courses[1].'&section=0&d='.$day.'&m='.$m.'&y='.$y);
+              $dayhref = new moodle_url($CFG->wwwroot . '/course/modedit.php?add=bigbluebuttonbn&type=&course='.$courses[1].'&section=0&d='.$day.'&m='.$m.'&y='.$y);
             }
             $popupcontent = '';
             foreach ($eventids as $eventid) {
