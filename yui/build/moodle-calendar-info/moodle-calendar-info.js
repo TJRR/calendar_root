@@ -138,7 +138,7 @@ Y.extend(Info, Y.Base, {
         this._showTimer = setTimeout(Y.bind(function() {
                 var calendarCell = e.target.ancestor(CALENDAREVENT, true);
                 this._show(calendarCell);
-            }, this), this.get(EVENTDELAY));
+            }, this), this.get(EVENTDELAY)+1100);
     },
 
     /**
@@ -172,8 +172,8 @@ Y.extend(Info, Y.Base, {
             .set('width', calendarParent.get('offsetWidth') + 'px')
             // Align it with the area clicked.
             .align(calendarParent, [
-                    widgetPositionAlign.TC,
-                    widgetPositionAlign.TC
+                    widgetPositionAlign.TL,
+                    widgetPositionAlign.TR
                 ])
             // Show it.
             .show();

@@ -168,12 +168,13 @@ Y.extend(Info, Y.Base, {
         this._currentDay = dayCell;
 
         this._panel.constrain(calendarParent);
+
         this._panel
             .set('width', calendarParent.get('offsetWidth') + 'px')
             // Align it with the area clicked.
             .align(calendarParent, [
-                    widgetPositionAlign.TC,
-                    widgetPositionAlign.TC
+                    widgetPositionAlign.TR,
+                    widgetPositionAlign.TL
                 ])
             // Show it.
             .show();
@@ -212,7 +213,7 @@ Y.extend(Info, Y.Base, {
             ._cancelHide();
         this._hideTimer = setTimeout(Y.bind(function() {
                 this._hide();
-            }, this), this.get(EVENTDELAY));
+            }, this), this.get(EVENTDELAY)+1100);
     },
 
     /**
