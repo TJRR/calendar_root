@@ -352,8 +352,9 @@ function calendar_get_mini($courses, $groups, $users, $calmonth = false, $calyea
         //Pegando o dia e mes atual para fazer os calculos e apresentar o link para criação direta de evento
         $diaatual = intval(date('d'));
         $mesatual = intval(date('m'));
+        $anoatual = intval(date('Y'));
 
-        if (!empty($eventids) || ($day >= $diaatual && $m == $mesatual) || $m > $mesatual) {
+        if (!empty($eventids) || ($day >= $diaatual && $m == $mesatual) || $m > $mesatual || $y > $anoatual) {
             // There is at least one event on this day.
 
             $class .= ' hasevent';
