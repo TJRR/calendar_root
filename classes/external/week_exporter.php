@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\external\exporter;
 use renderer_base;
+use moodle_url;
 
 /**
  * Class for displaying the week view.
@@ -152,6 +153,15 @@ class week_exporter extends exporter {
             $istoday = $istoday && $today['year'] == $daydata['year'];
             $istoday = $istoday && $today['yday'] == $daydata['yday'];
             $daydata['istoday'] = $istoday;
+
+            $isupcomingday = true;
+            $isupcomingday = $isupcomingday && $today['year'] == $daydata['year'];
+            $isupcomingday = $isupcomingday && $today['yday'] < $daydata['yday'];
+            $isupcomingday = $isupcomingday || $today['year'] < $daydata['year'];
+            $daydata['isupcomingday'] = $isupcomingday;
+            //$upcomingdayurl = $CFG->wwwroot . '/course/modedit.php?add=bigbluebuttonbn&type=&course='.$courses[1].'&section=0&d='. $daydata['mday'] .'&m='. $daydata['mon'] .'&y='. $daydata['year'];
+            $upcomingdayurl = $CFG->wwwroot . '/course/modedit.php?add=bigbluebuttonbn&type=&course=1&section=1&return=&sr=&d='. $daydata['mday'] .'&m='. $daydata['mon'] .'&y='. $daydata['year'];
+            $daydata['upcomingdayurl'] = $upcomingdayurl;            
 
             $daydata['isweekend'] = !!($weekend & (1 << ($daydata['wday'] % $numberofdaysinweek)));
 
