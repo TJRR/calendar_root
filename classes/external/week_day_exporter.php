@@ -66,6 +66,14 @@ class week_day_exporter extends day_exporter {
                 'type' => PARAM_BOOL,
                 'default' => false,
             ],
+            'isupcomingday' => [
+                'type' => PARAM_BOOL,
+                'default' => false,
+            ],
+            'upcomingdayurl' => [
+                'type' => PARAM_RAW,
+                'default' => '',
+            ],
             'isweekend' => [
                 'type' => PARAM_BOOL,
                 'default' => false,

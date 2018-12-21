@@ -148,9 +148,13 @@
                                 {{/content}}
                             {{/ core_calendar/minicalendar_day_link }}
                         {{/popovertitle}}{{!
-                        }}{{^popovertitle}}
-                            {{mday}}
-                        {{/popovertitle}}{{!
+                        }}{{^popovertitle}}{{!
+
+                          This cell is for upcoming days.
+
+                          }}{{#isupcomingday}} <a href='{{upcomingdayurl}}'>{{mday}}</a> {{/isupcomingday}}{{!
+                          }}{{^isupcomingday}}  {{mday}} {{/isupcomingday}}{{!
+                        }}{{/popovertitle}}{{!
                     }}</td>
                 {{/days}}
                 {{#postpadding}}
