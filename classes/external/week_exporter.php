@@ -106,7 +106,14 @@ class week_exporter extends exporter {
      * @return array Keys are the property names, values are their values.
      */
     protected function get_other_values(renderer_base $output) {
-        global $CFG;
+        global $CFG, $PAGE;
+
+        if(isset($PAGE->course->id)){
+            $courseid_received = $PAGE->course->id;
+          }else{
+            $courseid_received = 1;
+          }
+
         $return = [
             'prepadding' => [],
             'postpadding' => [],
@@ -159,8 +166,9 @@ class week_exporter extends exporter {
             $isupcomingday = $isupcomingday && $today['yday'] < $daydata['yday'];
             $isupcomingday = $isupcomingday || $today['year'] < $daydata['year'];
             $daydata['isupcomingday'] = $isupcomingday;
-            //$upcomingdayurl = $CFG->wwwroot . '/course/modedit.php?add=bigbluebuttonbn&type=&course='.$courses[1].'&section=0&d='. $daydata['mday'] .'&m='. $daydata['mon'] .'&y='. $daydata['year'];
-            $upcomingdayurl = $CFG->wwwroot . '/course/modedit.php?add=bigbluebuttonbn&type=&course=1&section=1&return=&sr=&d='. $daydata['mday'] .'&m='. $daydata['mon'] .'&y='. $daydata['year'];
+
+            $upcomingdayurl = $CFG->wwwroot . '/course/modedit.php?add=bigbluebuttonbn&type=&course='. $courseid_received .'&section=1&return=&sr=&d='. $daydata['mday'] .'&m='. $daydata['mon'] .'&y='. $daydata['year'];
+
             $daydata['upcomingdayurl'] = $upcomingdayurl;
 
             $daydata['isweekend'] = !!($weekend & (1 << ($daydata['wday'] % $numberofdaysinweek)));
