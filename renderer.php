@@ -250,7 +250,7 @@ class core_calendar_renderer extends plugin_renderer_base {
         }
 
         $contextrecords = [];
-        $courses = calendar_get_default_courses($courseid, 'id, shortname');
+        $courses = calendar_get_default_courses($courseid, 'id, shortname, fullname');
 
         if (!empty($courses) && count($courses) > CONTEXT_CACHE_MAX_SIZE) {
             // We need to pull the context records from the DB to preload them
@@ -279,7 +279,7 @@ class core_calendar_renderer extends plugin_renderer_base {
                 context_helper::preload_from_record($contextrecords[$course->id]);
             }
             $coursecontext = context_course::instance($course->id);
-            $courseoptions[$course->id] = format_string($course->shortname, true, array('context' => $coursecontext));
+            $courseoptions[$course->id] = format_string($course->fullname, true, array('context' => $coursecontext));
         }
 
         if ($courseid) {

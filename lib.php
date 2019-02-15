@@ -2354,7 +2354,7 @@ function calendar_get_default_courses($courseid = null, $fields = '*', $canmanag
         $prefixedfields = array_map(function($value) {
             return 'c.' . trim($value);
         }, $fieldlist);
-        $courses = get_courses('all', 'c.shortname', implode(',', $prefixedfields));
+        $courses = get_courses('all', 'c.fullname', implode(',', $prefixedfields));
     } else {
         $courses = enrol_get_users_courses($userid, true, $fields);
     }
