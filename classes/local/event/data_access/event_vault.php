@@ -32,6 +32,13 @@ use core_calendar\local\event\exceptions\limit_invalid_parameter_exception;
 use core_calendar\local\event\factories\action_factory_interface;
 use core_calendar\local\event\factories\event_factory_interface;
 use core_calendar\local\event\strategies\raw_event_retrieval_strategy_interface;
+use core_calendar\local\event\entities\event;
+use core_calendar\local\event\value_objects\event_description;
+use core_calendar\local\event\value_objects\event_times;
+use core_calendar\local\event\proxies\coursecat_proxy;
+use core_calendar\local\event\proxies\std_proxy;
+use core_calendar\local\event\entities\repeat_event_collection;
+use core_calendar\local\event\proxies\cm_info_proxy;
 
 /**
  * Event vault class.
@@ -171,19 +178,77 @@ class event_vault implements event_vault_interface {
             $limitnum,
             $ignorehidden
         ))) {
+
+            //Array para não deixar mostrar eventos duplicados do BBB
+            $duplicados = array();
             foreach ($records as $record) {
-                if ($event = $this->transform_from_database_record($record)) {
-                    $filtertest = $filter ? $filter($event) : true;
 
-                    if ($event && $filtertest) {
-                        $events[] = $event;
-                    }
+              $category = new coursecat_proxy($record->categoryid);
+              $course = new std_proxy($record->courseid, function($id) {
+                  return calendar_get_course_cached($record->courseid, $id);
+              });
+              $user = null;
+              if ($record->userid) {
+                  $user = new std_proxy($record->userid, function($id) {
+                      global $DB;
+                      return $DB->get_record('user', ['id' => $id]);
+                  });
+              }
+              $subscription = null;
+              if ($record->subscriptionid) {
+                  $subscription = new std_proxy($dbrow->subscriptionid, function($id) {
+                      return calendar_get_subscription($id);
+                  });
+              }
+              $repeatcollection = null;
+              if (!empty($record->repeatid)) {
+                  $repeatcollection = new repeat_event_collection($record, $this);
+              } else {
+                  $repeatcollection = null;
+              }
+              $module = null;
 
-                    if (count($events) == $limitnum) {
-                        // We've got all of the events so break both loops.
-                        break 2;
-                    }
-                }
+              if ($record->modulename && $record->instance) {
+                  //Função feita para descobrir qual o real curso onde foi criado o evento do BBB e linkar para o mesmo via outros cursos
+                  global $DB;
+                  $real_module = $DB->get_record('course_modules', ['instance' => $record->instance]);
+                  if($real_module->module == 23 && $real_module->course != $record->courseid){
+                    $record->courseid = $real_module->course;
+                  }
+                  //Final do teste
+                  $module = new cm_info_proxy($record->modulename, $record->instance, $record->courseid);
+              }
+              $event = new event(
+                  $record->id,
+                  $record->name,
+                  new event_description($record->description, $record->format),
+                  $category,
+                  $course,
+                  $subscription,
+                  $user,
+                  $repeatcollection,
+                  $module,
+                  $record->eventtype,
+                  new event_times(
+                      (new \DateTimeImmutable())->setTimestamp($record->timestart),
+                      (new \DateTimeImmutable())->setTimestamp($record->timestart + $record->timeduration),
+                      (new \DateTimeImmutable())->setTimestamp($record->timesort ? $record->timesort : $record->timestart),
+                      (new \DateTimeImmutable())->setTimestamp($record->timemodified)
+                  ),
+                  !empty($record->visible),
+                  $record->subscriptionid,
+                  $record->location
+              );
+
+              if($record->modulename == 'bigbluebuttonbn' && !in_array($record->courseid, $duplicados)){
+                  array_push($duplicados,$record->courseid);
+                  $events[] = $event;
+              }
+
+              if (count($events) == $limitnum) {
+                  // We've got all of the events so break both loops.
+                  break 2;
+              }
             }
 
             $offset += $limitnum;
